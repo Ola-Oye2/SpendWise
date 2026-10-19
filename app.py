@@ -9,7 +9,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = "Ola-loves"
+app.secret_key = os.environ.get("SECRET_KEY")
 
 app.config["SQLALCHEMY_DATABASE_URI"] = (f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}"
                                          f"@{os.getenv('DB_HOST')}/{os.getenv('DB_NAME')}")
