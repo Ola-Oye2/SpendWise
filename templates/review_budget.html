@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Review Budget | SpendWise{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="text-center mb-4">
+        <h1 class="fw-bold">Review Budget</h1>
+        <p class="text-muted">Check your budget details before confirming.</p>
+    </div>
+
+    <div class="card shadow-sm mx-auto" style="max-width: 650px;">
+        <div class="card-body p-4">
+
+            <div class="text-center mb-4">
+                <p class="text-muted mb-1">Budget Month</p>
+                <h2 class="h4">{{ month }}</h2>
+            </div>
+
+            <div class="list-group list-group-flush mb-4">
+
+                <div class="list-group-item d-flex justify-content-between gap-3">
+                    <span>Total Budget</span>
+                    <strong>₦{{ "{:,.2f}".format(total_amount|float) }}</strong>
+                </div>
+
+                <div class="list-group-item d-flex justify-content-between gap-3">
+                    <span>Needs Limit</span>
+                    <strong>₦{{ "{:,.2f}".format(needs_limit|float) }}</strong>
+                </div>
+
+                <div class="list-group-item d-flex justify-content-between gap-3">
+                    <span>Wants Limit</span>
+                    <strong>₦{{ "{:,.2f}".format(wants_limit|float) }}</strong>
+                </div>
+
+                <div class="list-group-item d-flex justify-content-between gap-3">
+                    <span>Unallocated</span>
+                    <strong>₦{{ "{:,.2f}".format(unallocated|float) }}</strong>
+                </div>
+
+            </div>
+
+            {% if unallocated|float < 0 %}
+                <div class="alert alert-danger">
+                    Your Needs and Wants limits exceed your total budget. Adjust the amounts before confirming.
+                </div>
+            {% elif unallocated|float > 0 %}
+                <div class="alert alert-info">
+                    You have some money left unallocated. You can keep it unassigned for now.
+                </div>
+            {% else %}
+                <div class="alert alert-success">
+                    Your entire budget has been allocated.
+                </div>
+            {% endif %}
+
+            <div class="d-flex justify-content-center flex-wrap gap-2 mt-4">
+
+                <form method="POST" action="{{ url_for('add_budget') }}">
+                    <input type="hidden" name="action" value="back">
+                    <input type="hidden" name="month" value="{{ month }}">
+                    <input type="hidden" name="total_amount" value="{{ total_amount }}">
+                    <input type="hidden" name="needs_limit" value="{{ needs_limit }}">
+                    <input type="hidden" name="wants_limit" value="{{ wants_limit }}">
+
+                    <button type="submit" class="btn btn-secondary">
+                        Go Back
+                    </button>
+                </form>
+
+                <form method="POST" action="{{ url_for('confirm_budget') }}">
+                    <input type="hidden" name="month" value="{{ month }}">
+                    <input type="hidden" name="total_amount" value="{{ total_amount }}">
+                    <input type="hidden" name="needs_limit" value="{{ needs_limit }}">
+                    <input type="hidden" name="wants_limit" value="{{ wants_limit }}">
+
+                    <button type="submit"
+                            class="btn btn-primary"
+                            {% if unallocated|float < 0 %}disabled{% endif %}>
+                        Confirm Budget
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

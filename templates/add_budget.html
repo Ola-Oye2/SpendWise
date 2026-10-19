@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Add Budget | SpendWise{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="text-center mb-4">
+        <h1 class="fw-bold">Add Budget</h1>
+        <p class="text-muted">Plan how much you want to spend each month.</p>
+    </div>
+
+    <div class="card shadow-sm mx-auto" style="max-width: 650px;">
+        <div class="card-body p-4">
+
+            <form method="POST">
+
+                <div class="mb-3">
+                    <label for="month" class="form-label">Month</label>
+                    <input type="month" class="form-control" id="month" name="month" value="{{ month or '' }}" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="total_amount" class="form-label">Total Budget (₦)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">₦</span>
+                        <input type="text" inputmode="decimal" class="form-control money-input" id="total_amount" name="total_amount" value="{% if total_amount is defined and total_amount != '' %}{{ '{:,.2f}'.format(total_amount|float) }}{% endif %}" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="needs_limit" class="form-label">Needs Limit (₦)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">₦</span>
+                        <input type="text" inputmode="decimal" class="form-control money-input" id="needs_limit" name="needs_limit" value="{% if needs_limit is defined and needs_limit != '' %}{{ '{:,.2f}'.format(needs_limit|float) }}{% endif %}" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="wants_limit" class="form-label">Wants Limit (₦)</label>
+                    <div class="input-group">
+                        <span class="input-group-text">₦</span>
+                        <input type="text" inputmode="decimal" class="form-control money-input" id="wants_limit" name="wants_limit" value="{% if wants_limit is defined and wants_limit != '' %}{{ '{:,.2f}'.format(wants_limit|float) }}{% endif %}" required>
+                    </div>
+                </div>
+
+                <p class="form-text">The Needs and Wants limits are parts of your total budget. Any amount left over will be shown as unallocated.
+                </p>
+
+                <div class="d-flex justify-content-center flex-wrap gap-2 mt-4">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                        Go Back
+                    </a>
+
+                    <button type="submit" class="btn btn-primary">
+                        Review Budget
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

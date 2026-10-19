@@ -1,0 +1,24 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">SpendWise</title>
+
+  <rect width="64" height="64" rx="14" fill="#F7F3EA"/>
+
+  <!-- Wallet -->
+  <path d="M16 22 Q16 17 22 17 H46 Q50 17 50 22 V46 Q50 50 46 50 H19 Q13 50 13 44 V25 Q13 22 16 22Z"
+        fill="#183153"/>
+
+  <!-- Wallet clasp -->
+  <path d="M38 29 H51 Q55 29 55 33 V39 Q55 42 51 42 H38 Q34 42 34 38 V33 Q34 29 38 29Z"
+        fill="#183153" stroke="#F7F3EA" stroke-width="2"/>
+  <circle cx="43" cy="35.5" r="2" fill="#F7F3EA"/>
+
+  <!-- Notes -->
+  <path d="M21 13 L39 7 L43 12 L25 18Z" fill="#18A999"/>
+  <path d="M27 17 L44 12 L47 17 L30 22Z" fill="#18A999"/>
+
+  <!-- Leaves -->
+  <path d="M21 48 C11 43 10 35 12 31 C22 34 26 41 24 49Z" fill="#18A999"/>
+  <path d="M24 49 C24 39 31 34 38 35 C38 43 32 49 24 51Z" fill="#18A999"/>
+  <path d="M24 51 L18 39 M25 50 L33 40" stroke="#F7F3EA" stroke-width="1.5" fill="none"/>
+</svg>

@@ -1,0 +1,389 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}SpendWise{% endblock %}</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+
+    <style>
+        body {
+            min-height: 100vh;
+            background-color: var(--sw-bg);
+            color: var(--sw-text);
+        }
+
+        main {
+            min-height: 70vh;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: 0.2px;
+        }
+
+        .flash-message {
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 10px;
+        }
+
+
+        h1,h2,h3,h4,h5,h6 {
+            text-align: center !important;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            width: 100%;
+            margin: 24px auto 0;
+        }
+
+        @media print {
+            .no-print,
+            nav,
+            .navbar,
+            .sidebar,
+            footer,
+            .btn,
+            form {
+                display: none !important;
+            }
+
+            body {
+                background: white !important;
+                color: black !important;
+                font-size: 12pt;
+            }
+
+            .container,
+            .container-fluid {
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            tr {
+                break-inside: avoid;
+            }
+
+            table {
+                width: 100% !important;
+                border-collapse: collapse;
+            }
+
+            th,
+            td {
+                color: black !important;
+                border: 1px solid #999 !important;
+                padding: 8px !important;
+            }
+
+            h1,
+            h2,
+            h3 {
+                color: black !important;
+            }
+
+            .progress {
+                display: flex !important;
+                height: 18px !important;
+                overflow: hidden !important;
+                background-color: #e9ecef !important;
+                border: 1px solid #999 !important;
+                print-color-adjust: exact !important;
+                -webkit-print-color-adjust: exact !important;
+            }
+
+            .progress-bar {
+                display: block !important;
+                print-color-adjust: exact !important;
+                -webkit-print-color-adjust: exact !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Main navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark no-print">
+        <div class="container">
+
+
+<a class="navbar-brand d-flex align-items-center" href="{{ url_for('dashboard') if session.get('user_id') else url_for('login') }}">
+    <img src="{{ url_for('static', filename='spendwise-logo.svg') }}" alt="SpendWise" height="48" class="me-2">
+</a>
+
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainNavbar"
+                aria-controls="mainNavbar"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+
+                    {% if session.get('user_id') %}
+
+                        <!-- Dashboard -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('dashboard') }}">
+                                Dashboard
+                            </a>
+                        </li>
+
+                        <!-- Income dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="incomeDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Income
+                            </a>
+
+                            <ul class="dropdown-menu" aria-labelledby="incomeDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('add_income') }}">
+                                        Add Income
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('view_income') }}">
+                                        View Income
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- Expenses dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="expensesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Expenses
+                            </a>
+
+                            <ul class="dropdown-menu" aria-labelledby="expensesDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('add_expense') }}">
+                                        Add Expense
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('view_expenses') }}">
+                                        View Expenses
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- Budgets dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="budgetsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Budgets
+                            </a>
+
+                            <ul class="dropdown-menu" aria-labelledby="budgetsDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('add_budget') }}">
+                                        Add Budget
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('view_budgets') }}">
+                                        View Budgets
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <!-- Reports dropdown -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="reportsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Reports
+                            </a>
+
+                            <ul class="dropdown-menu" aria-labelledby="reportsDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('financial_summary') }}">
+                                        Financial Summary
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('spending_analysis') }}">
+                                        Spending Analysis
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="accountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                My Account
+                            </a>
+
+                            <ul class="dropdown-menu dropdown-menu-end"aria-labelledby="accountDropdown">
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('profile') }}">
+                                        My Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('edit_profile') }}">
+                                        Edit Profile
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ url_for('logout') }}">
+                                        Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
+                    {% else %}
+
+                        <!-- Logged-out navigation -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('login') }}">
+                                Login
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('register') }}">
+                                Register
+                            </a>
+                        </li>
+
+                    {% endif %}
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page content and flash messages -->
+    <main class="container py-4">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div
+                        class="alert alert-{{ category if category in ['success', 'danger', 'warning', 'info', 'primary', 'secondary', 'light', 'dark'] else 'info' }} alert-dismissible fade show flash-message no-print"
+                        role="alert"
+                    >
+                        {{ message }}
+
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert"
+                            aria-label="Close"
+                        ></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center text-muted py-3 mt-4 no-print">
+        <small>SpendWise · Personal Finance Tracker</small>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const moneyInputs = document.querySelectorAll(".money-input");
+
+            moneyInputs.forEach(function (input) {
+                // Format the existing value when the page opens.
+                function formatMoney(value) {
+                    let cleaned = value.replace(/[^\d.]/g, "");
+                    const decimalIndex = cleaned.indexOf(".");
+
+                    if (decimalIndex !== -1) {
+                        cleaned =
+                            cleaned.slice(0, decimalIndex + 1) +
+                            cleaned.slice(decimalIndex + 1).replace(/\./g, "");
+                    }
+
+                    if (cleaned === "") {
+                        return "";
+                    }
+
+                    const parts = cleaned.split(".");
+                    const wholeNumber = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+                    if (parts.length === 1) {
+                        return wholeNumber;
+                    }
+
+                    return wholeNumber + "." + parts[1].slice(0, 2);
+                }
+
+                input.value = formatMoney(input.value);
+
+                // Format the value as the user types.
+                input.addEventListener("input", function () {
+                    const cursorPosition = input.selectionStart;
+                    const oldValue = input.value;
+                    const formattedValue = formatMoney(oldValue);
+
+                    input.value = formattedValue;
+
+                // Keep the cursor near its previous position.
+                const difference = formattedValue.length - oldValue.length;
+                const newPosition = Math.max(
+                    0,
+                    Math.min(
+                        formattedValue.length,
+                        cursorPosition + difference
+                    )
+                );
+
+                input.setSelectionRange(newPosition, newPosition);
+            });
+
+            // Remove commas before the form is submitted.
+            const form = input.closest("form");
+
+            if (form) {
+                form.addEventListener("submit", function () {
+                    input.value = input.value.replace(/,/g, "");
+                });
+            }
+        });
+    });
+    </script>
+
+</body>
+</html>

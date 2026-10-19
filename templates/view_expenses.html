@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% block title %}My Expenses | SpendWise{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- Page Heading -->
+    <div class="text-center mb-4">
+        <h1 class="fw-bold mb-2">My Expenses</h1>
+        <p class="text-muted">View, search and manage your expenses.</p>
+    </div>
+
+    <!-- Page Actions -->
+    <div class="d-flex justify-content-center flex-wrap gap-2 mb-4 no-print">
+        <a href="{{ url_for('add_expense') }}" class="btn btn-primary">
+            Add Expense
+        </a>
+
+        <button type="button" class="btn btn-outline-primary" onclick="window.print()">
+            Print Expenses
+        </button>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="card shadow-sm mb-4 no-print">
+        <div class="card-body">
+
+            <h5 class="card-title text-center mb-4">Search and Filter Expenses</h5>
+
+            <form method="GET" action="{{ url_for('view_expenses') }}">
+
+                <div class="row g-3">
+
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <label for="search" class="form-label">Search</label>
+                        <input type="text" class="form-control" id="search" name="search" placeholder="Search expenses..." value="{{ search }}">
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <label for="category" class="form-label">Category</label>
+                        <select class="form-select" id="category" name="category">
+                            <option value="">All Categories</option>
+                            <option value="Food" {% if category == "Food" %}selected{% endif %}>Food</option>
+                            <option value="Transportation" {% if category == "Transportation" %}selected{% endif %}>Transportation</option>
+                            <option value="Housing" {% if category == "Housing" %}selected{% endif %}>Housing</option>
+                            <option value="Education" {% if category == "Education" %}selected{% endif %}>Education</option>
+                            <option value="Health" {% if category == "Health" %}selected{% endif %}>Health</option>
+                            <option value="Shopping" {% if category == "Shopping" %}selected{% endif %}>Shopping</option>
+                            <option value="Entertainment" {% if category == "Entertainment" %}selected{% endif %}>Entertainment</option>
+                            <option value="Utilities" {% if category == "Utilities" %}selected{% endif %}>Utilities</option>
+                            <option value="Personal Care" {% if category == "Personal Care" %}selected{% endif %}>Personal Care</option>
+                            <option value="Other" {% if category == "Other" %}selected{% endif %}>Other</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <label for="type" class="form-label">Expense Type</label>
+                        <select class="form-select" id="type" name="type">
+                            <option value="">All Types</option>
+                            <option value="Need" {% if expense_type == "Need" %}selected{% endif %}>Need</option>
+                            <option value="Want" {% if expense_type == "Want" %}selected{% endif %}>Want</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <label for="start_date" class="form-label">From Date</label>
+                        <input type="date" class="form-control" id="start_date" name="start_date" value="{{ start_date }}">
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <label for="end_date" class="form-label">To Date</label>
+                        <input type="date" class="form-control" id="end_date" name="end_date" value="{{ end_date }}">
+                    </div>
+
+                    <div class="col-12 d-flex justify-content-center flex-wrap gap-2 mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            Search
+                        </button>
+
+                        <a href="{{ url_for('view_expenses') }}" class="btn btn-outline-secondary">
+                            Clear Filters
+                        </a>
+                    </div>
+
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <!-- Expenses Table -->
+    {% if expenses %}
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover table-bordered align-middle">
+
+            <thead class="table-dark">
+                <tr>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Description</th>
+                    <th class="no-print">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for expense in expenses %}
+                <tr>
+                    <td class="text-nowrap">{{ expense.date }}</td>
+
+                    <td>{{ expense.category }}</td>
+
+                    <td>
+                        {% if expense.type == "Need" %}
+                            <span class="badge bg-primary">Need</span>
+                        {% elif expense.type == "Want" %}
+                            <span class="badge bg-warning text-dark">Want</span>
+                        {% else %}
+                            {{ expense.type }}
+                        {% endif %}
+                    </td>
+
+                    <td class="text-nowrap fw-semibold">
+                        ₦{{ "{:,.2f}".format(expense.amount) }}
+                    </td>
+
+                    <td>{{ expense.description or "No description" }}</td>
+
+                    <td class="no-print">
+                        <div class="d-flex flex-wrap justify-content-center gap-2">
+
+                            <a href="{{ url_for('edit_expense', expense_id=expense.expense_id) }}" class="btn btn-sm btn-outline-primary">
+                                Edit
+                            </a>
+
+                            <form method="POST" action="{{ url_for('delete_expense', expense_id=expense.expense_id) }}" onsubmit="return confirm('Are you sure you want to delete this expense record? Once deleted, it cannot be recovered.');">
+
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    Delete
+                                </button>
+
+                            </form>
+
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+    {% else %}
+
+    <div class="alert alert-info text-center">
+        <p class="mb-2">No expenses found. Try changing your search or filters.</p>
+
+        <a href="{{ url_for('add_expense') }}" class="btn btn-primary btn-sm no-print">
+            Add Expense
+        </a>
+
+        <a href="{{ url_for('view_expenses') }}" class="btn btn-outline-secondary btn-sm no-print">
+            Clear Filters
+        </a>
+    </div>
+
+    {% endif %}
+
+    <!-- Back Button -->
+    <div class="d-flex justify-content-center mt-4 no-print">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+            Back to Dashboard
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

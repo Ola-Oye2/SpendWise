@@ -1,0 +1,396 @@
+body{
+    background-color: #f4f4f4;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    padding-top: 100px;
+}
+
+p{
+    color: #555;
+    font-size: 18px;
+    font-style: italic;
+}
+
+h1,h2,h3,h4,h5,h6{
+    width: 100%;
+    text-align: center !important;
+}
+
+
+/* =========================================
+   SPENDWISE OFFICIAL BRAND IDENTITY
+   Navy + Teal + Warm Cream
+   ========================================= */
+
+:root {
+    /* Brand */
+    --sw-primary: #183153;
+    --sw-primary-hover: #12243D;
+    --sw-secondary: #52657A;
+    --sw-accent: #18A999;
+    --sw-accent-hover: #117C70;
+
+    /* Backgrounds and surfaces */
+    --sw-bg: #F7F3EA;
+    --sw-surface: #FFFEFA;
+    --sw-surface-tint: #E7F3F2;
+    --sw-surface-muted: #F0EDE5;
+
+    /* Text and borders */
+    --sw-text: #202A38;
+    --sw-text-muted: #657386;
+    --sw-border: #E4E0D7;
+
+    /* Semantic colours */
+    --sw-success: #237A57;
+    --sw-success-bg: #E7F4EC;
+    --sw-warning: #946200;
+    --sw-warning-bg: #FFF3D6;
+    --sw-danger: #B42332;
+    --sw-danger-bg: #FCE8E8;
+    --sw-info: #245A8D;
+    --sw-info-bg: #E8F1FB;
+
+    /* Shared design details */
+    --sw-radius: 12px;
+    --sw-shadow: 0 3px 12px rgba(24, 49, 83, 0.06);
+}
+
+/* Main application */
+body {
+    background-color: var(--sw-bg);
+    color: var(--sw-text);
+}
+
+main {
+    color: var(--sw-text);
+}
+
+/* Navbar and brand */
+.navbar.navbar-dark.bg-dark {
+    background-color: var(--sw-primary) !important;
+}
+
+.navbar-brand {
+    color: #FFFFFF !important;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.88);
+    transition: color 0.2s ease;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link:focus {
+    color: #8DE1D6;
+}
+
+.navbar .dropdown-menu {
+    background-color: var(--sw-surface);
+    border: 1px solid var(--sw-border);
+    border-radius: 10px;
+    box-shadow: var(--sw-shadow);
+}
+
+.navbar .dropdown-item {
+    color: var(--sw-text);
+}
+
+.navbar .dropdown-item:hover,
+.navbar .dropdown-item:focus {
+    background-color: var(--sw-surface-tint);
+    color: var(--sw-primary);
+}
+
+/* Cards and panels */
+.card {
+    background-color: var(--sw-surface);
+    border-color: var(--sw-border);
+    border-radius: var(--sw-radius);
+}
+
+.card.shadow-sm {
+    box-shadow: var(--sw-shadow) !important;
+}
+
+.card-header {
+    background-color: var(--sw-surface-tint);
+    color: var(--sw-primary);
+    border-bottom-color: var(--sw-border);
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--sw-primary);
+}
+
+/* Links */
+a {
+    color: var(--sw-accent-hover);
+}
+
+a:hover {
+    color: var(--sw-primary);
+}
+
+/* Main buttons */
+.btn-dark,
+.btn-primary {
+    background-color: var(--sw-primary);
+    border-color: var(--sw-primary);
+    color: #FFFFFF;
+}
+
+.btn-dark:hover,
+.btn-dark:focus,
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: var(--sw-primary-hover);
+    border-color: var(--sw-primary-hover);
+    color: #FFFFFF;
+}
+
+.btn-success {
+    background-color: var(--sw-success);
+    border-color: var(--sw-success);
+    color: #FFFFFF;
+}
+
+.btn-success:hover,
+.btn-success:focus {
+    background-color: #195D42;
+    border-color: #195D42;
+    color: #FFFFFF;
+}
+
+.btn-outline-dark {
+    color: var(--sw-primary);
+    border-color: var(--sw-primary);
+}
+
+.btn-outline-dark:hover,
+.btn-outline-dark:focus {
+    background-color: var(--sw-primary);
+    border-color: var(--sw-primary);
+    color: #FFFFFF;
+}
+
+.btn-outline-secondary {
+    color: var(--sw-secondary);
+    border-color: #B9C1CA;
+}
+
+.btn-outline-secondary:hover,
+.btn-outline-secondary:focus {
+    background-color: var(--sw-secondary);
+    border-color: var(--sw-secondary);
+    color: #FFFFFF;
+}
+
+/* Form fields */
+.form-control,
+.form-select {
+    background-color: var(--sw-surface);
+    color: var(--sw-text);
+    border-color: #D4D6D7;
+    border-radius: 8px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: var(--sw-surface);
+    color: var(--sw-text);
+    border-color: var(--sw-accent);
+    box-shadow: 0 0 0 0.2rem rgba(24, 169, 153, 0.18);
+}
+
+.form-label {
+    color: var(--sw-text);
+    font-weight: 500;
+}
+
+.form-text,
+.text-muted {
+    color: var(--sw-text-muted) !important;
+}
+
+/* Subtle tinted areas */
+.bg-light {
+    background-color: var(--sw-surface-tint) !important;
+}
+
+hr {
+    border-color: var(--sw-border);
+    opacity: 1;
+}
+
+/* Tables */
+.table {
+    --bs-table-color: var(--sw-text);
+    --bs-table-bg: var(--sw-surface);
+    --bs-table-border-color: var(--sw-border);
+    --bs-table-striped-bg: #F5F6F2;
+    --bs-table-hover-bg: var(--sw-surface-tint);
+}
+
+.table thead th {
+    color: var(--sw-primary);
+    font-weight: 600;
+}
+
+/* Progress bars */
+.progress {
+    background-color: var(--sw-surface-muted);
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background-color: var(--sw-accent);
+}
+
+/* Flash messages and status alerts */
+.alert-success {
+    color: #185B40;
+    background-color: var(--sw-success-bg);
+    border-color: #B9DEC9;
+}
+
+.alert-warning {
+    color: #704900;
+    background-color: var(--sw-warning-bg);
+    border-color: #F0D89B;
+}
+
+.alert-danger {
+    color: #8D1D29;
+    background-color: var(--sw-danger-bg);
+    border-color: #F0BFC3;
+}
+
+.alert-info {
+    color: #194C7B;
+    background-color: var(--sw-info-bg);
+    border-color: #C3D8F0;
+}
+
+/* Footer */
+footer {
+    color: var(--sw-text-muted);
+}
+
+/* Accessibility: keyboard navigation */
+.btn:focus-visible,
+a:focus-visible {
+    outline: 3px solid var(--sw-accent);
+    outline-offset: 3px;
+}
+
+/* Keep printed reports clean and readable */
+@media print {
+    body {
+        background: #FFFFFF !important;
+        color: #000000 !important;
+    }
+
+    .card {
+        background: #FFFFFF !important;
+        box-shadow: none !important;
+    }
+}
+
+/* SpendWise: Fix table header colours */
+.table thead th {
+    background-color: #183153 !important;
+    color: #FFFEFA !important;
+    border-color: #183153 !important;
+    font-weight: 600;
+    vertical-align: middle;
+}
+
+/* Keep header text readable if the table uses Bootstrap variants */
+.table thead.table-dark th,
+.table-dark thead th {
+    background-color: #183153 !important;
+    color: #FFFEFA !important;
+    border-color: #183153 !important;
+}
+
+/* Table body text */
+.table tbody td {
+    color: #202A38;
+    vertical-align: middle;
+}
+
+/* Optional: subtle highlight when hovering over a row */
+.table tbody tr:hover td {
+    background-color: #E7F3F2;
+}
+
+/* SpendWise: Consistent page heading alignment */
+.page-title {
+    text-align: center !important;
+    color: #183153;
+    margin-bottom: 1.5rem;
+}
+
+
+/* Centre the Dashboard welcome section */
+.dashboard-welcome {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+}
+
+.dashboard-welcome .page-title {
+    width: 100%;
+    text-align: center !important;
+    margin-bottom: 0.75rem;
+}
+
+/* Centre Financial Summary heading and print button */
+.financial-summary-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    gap: 0.5rem;
+}
+
+.financial-summary-header .page-title {
+    width: 100%;
+    text-align: center !important;
+    margin-bottom: 0.25rem;
+}
+
+
+/* SpendWise navbar logo */
+.navbar-brand {
+    display: inline-flex;
+    align-items: center;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    margin-right: 1rem;
+}
+
+.navbar-brand img {
+    display: block;
+    width: auto;
+    height: 48px;
+    max-width: 190px;
+    object-fit: contain;
+}
+
+/* Keep the navbar tidy on smaller screens */
+@media (max-width: 991.98px) {
+    .navbar-brand img {
+        height: 42px;
+        max-width: 165px;
+    }
+}

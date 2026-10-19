@@ -1,0 +1,481 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- PAGE HEADER -->
+    <div class="text-center mb-4">
+        <h1 class="mb-2">Spending Analysis</h1>
+        <p class="text-muted">Understand where your money is going.</p>
+    </div>
+
+    <!-- SPENDING OVERVIEW -->
+    <h2 class="h4 mb-3">Spending Overview</h2>
+
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <p class="text-muted mb-2">Total Spending</p>
+                    <h3 class="h5 mb-0">₦{{ "{:,.2f}".format(total_spending) }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <p class="text-muted mb-2">Number of Expenses</p>
+                    <h3 class="h5 mb-0">{{ expense_count }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <p class="text-muted mb-2">Average Expense</p>
+                    <h3 class="h5 mb-0">₦{{ "{:,.2f}".format(average_expense) }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <p class="text-muted mb-2">Largest Expense</p>
+                    <h3 class="h5 mb-0">₦{{ "{:,.2f}".format(largest_expense) }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SPENDING BY CATEGORY -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <h2 class="h4 mb-3">Spending by Category</h2>
+
+            {% if spending_by_category %}
+                <div style="position: relative; height: 320px;">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+
+                <div class="table-responsive mt-4">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Category</th>
+                                <th class="text-end">Amount Spent</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category, amount in spending_by_category.items() %}
+                                <tr>
+                                    <td>{{ category }}</td>
+                                    <td class="text-end fw-semibold">
+                                        ₦{{ "{:,.2f}".format(amount) }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">
+                    No spending categories available yet.
+                </p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- NEEDS VS WANTS -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <h2 class="h4 mb-3">Needs vs Wants</h2>
+
+            <div class="row g-3 mb-3">
+                <div class="col-12 col-md-6">
+                    <div class="p-3 rounded bg-light h-100">
+                        <p class="text-muted mb-1">Needs</p>
+                        <h3 class="h5 mb-1">₦{{ "{:,.2f}".format(total_needs) }}</h3>
+                        <p class="mb-0">{{ "{:,.1f}".format(needs_percentage) }}% of spending</p>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="p-3 rounded bg-light h-100">
+                        <p class="text-muted mb-1">Wants</p>
+                        <h3 class="h5 mb-1">₦{{ "{:,.2f}".format(total_wants) }}</h3>
+                        <p class="mb-0">{{ "{:,.1f}".format(wants_percentage) }}% of spending</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="position: relative; height: 320px; max-width: 600px; margin: 0 auto;">
+                <canvas id="needsWantsChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- MONTHLY SPENDING -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <h2 class="h4 mb-3">Monthly Spending</h2>
+
+            {% if monthly_spending %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Month</th>
+                                <th class="text-end">Total Spending</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for month, amount in monthly_spending.items() %}
+                                <tr>
+                                    <td>{{ month }}</td>
+                                    <td class="text-end fw-semibold">
+                                        ₦{{ "{:,.2f}".format(amount) }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">
+                    No monthly spending data available yet.
+                </p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- MONTHLY SPENDING TREND -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <h2 class="h4 mb-3">Monthly Spending Trend</h2>
+
+            {% if monthly_spending %}
+                <div style="position: relative; height: 320px;">
+                    <canvas id="monthlySpendingChart"></canvas>
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">
+                    Add expenses across months to see your spending trend.
+                </p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- TOP SPENDING CATEGORIES -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <h2 class="h4 mb-3">Top Spending Categories</h2>
+
+            {% if spending_by_category %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Rank</th>
+                                <th>Category</th>
+                                <th class="text-end">Amount Spent</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for category, amount in spending_by_category.items() %}
+                                {% if loop.index <= 5 %}
+                                    <tr>
+                                        <td>{{ loop.index }}</td>
+                                        <td>{{ category }}</td>
+                                        <td class="text-end fw-semibold">₦{{ "{:,.2f}".format(amount) }}</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <p class="small text-muted mt-2 mb-0">
+                    Displays the first five categories in the order supplied by your Flask route.
+                    For the highest-spending categories to appear first, the route must sort them by amount.
+                </p>
+            {% else %}
+                <p class="text-muted mb-0">
+                    No spending categories available yet.
+                </p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- BUDGET VS ACTUAL -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <h2 class="h4 mb-3">Budget vs Actual Spending</h2>
+
+            {% if current_budget %}
+                <div class="row g-3 mb-3">
+                    <div class="col-12 col-md-6">
+                        <p class="text-muted mb-1">Monthly Budget</p>
+                        <h3 class="h5">
+                            ₦{{ "{:,.2f}".format(current_budget.total_amount) }}
+                        </h3>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <p class="text-muted mb-1">Actual Spending</p>
+                        <h3 class="h5">
+                            ₦{{ "{:,.2f}".format(current_month_spending) }}
+                        </h3>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <p class="text-muted mb-1">Remaining Budget</p>
+                        <h3 class="h5">
+                            ₦{{ "{:,.2f}".format(remaining_budget) }}
+                        </h3>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <p class="text-muted mb-1">Budget Used</p>
+                        <h3 class="h5">
+                            {{ "{:,.1f}".format(budget_percentage) }}%
+                        </h3>
+                    </div>
+                </div>
+
+                {% if budget_warning %}
+                    <div class="alert alert-warning mb-3" role="alert">
+                        <strong>Budget warning:</strong>
+                        You have used 65% or more of your monthly budget.
+                    </div>
+                {% endif %}
+
+                <div class="progress mb-4"
+                     role="progressbar"
+                     aria-label="Monthly budget used"
+                     aria-valuenow="{{ [budget_percentage, 100] | min }}"
+                     aria-valuemin="0"
+                     aria-valuemax="100"
+                     style="height: 12px;">
+                    <div class="progress-bar
+                                {% if budget_percentage >= 100 %}
+                                    bg-danger
+                                {% elif budget_percentage >= 65 %}
+                                    bg-warning
+                                {% else %}
+                                    bg-success
+                                {% endif %}"
+                         style="width: {{ [[budget_percentage, 0] | max, 100] | min }}%;">
+                    </div>
+                </div>
+
+                <div style="position: relative; height: 300px;">
+                    <canvas id="budgetChart"></canvas>
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">
+                    No budget has been set for this month yet.
+                </p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- NAVIGATION -->
+    <div class="text-center mt-4 no-print">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+            Back to Dashboard
+        </a>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+{% if spending_by_category %}
+<script>
+    const categoryLabels = {{ spending_by_category.keys() | list | tojson }};
+    const categoryData = {{ spending_by_category.values() | list | tojson }};
+
+    new Chart(document.getElementById("categoryChart"), {
+        type: "bar",
+        data: {
+            labels: categoryLabels,
+            datasets: [{
+                label: "Spending",
+                data: categoryData,
+                backgroundColor: "rgba(13, 110, 253, 0.75)",
+                borderRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            indexAxis: "y",
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return "₦" + Number(value).toLocaleString("en-NG");
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return "₦" + Number(context.raw).toLocaleString("en-NG", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            });
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endif %}
+
+<script>
+    new Chart(document.getElementById("needsWantsChart"), {
+        type: "doughnut",
+        data: {
+            labels: ["Needs", "Wants"],
+            datasets: [{
+                data: [
+                    {{ total_needs | tojson }},
+                    {{ total_wants | tojson }}
+                ],
+                backgroundColor: [
+                    "rgba(25, 135, 84, 0.8)",
+                    "rgba(255, 193, 7, 0.85)"
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: "bottom"
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ": ₦" +
+                                Number(context.raw).toLocaleString("en-NG", {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                });
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+{% if monthly_spending %}
+<script>
+    const monthlySpendingLabels = {{ monthly_spending.keys() | list | tojson }};
+    const monthlySpendingData = {{ monthly_spending.values() | list | tojson }};
+
+    new Chart(document.getElementById("monthlySpendingChart"), {
+        type: "line",
+        data: {
+            labels: monthlySpendingLabels,
+            datasets: [{
+                label: "Monthly Spending",
+                data: monthlySpendingData,
+                borderColor: "rgba(13, 110, 253, 1)",
+                backgroundColor: "rgba(13, 110, 253, 0.15)",
+                fill: true,
+                tension: 0.3,
+                pointRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return "₦" + Number(value).toLocaleString("en-NG");
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return "₦" + Number(context.raw).toLocaleString("en-NG", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            });
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endif %}
+
+{% if current_budget %}
+<script>
+    new Chart(document.getElementById("budgetChart"), {
+        type: "bar",
+        data: {
+            labels: ["Budget", "Actual Spending"],
+            datasets: [{
+                label: "Amount",
+                data: [
+                    {{ current_budget.total_amount | tojson }},
+                    {{ current_month_spending | tojson }}
+                ],
+                backgroundColor: [
+                    "rgba(13, 110, 253, 0.75)",
+                    "rgba(220, 53, 69, 0.75)"
+                ],
+                borderRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return "₦" + Number(value).toLocaleString("en-NG");
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return "₦" + Number(context.raw).toLocaleString("en-NG", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            });
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Add Income | SpendWise{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- Page heading -->
+    <div class="text-center mb-4">
+        <h1 class="fw-bold">Add Income</h1>
+        <p class="text-muted">Record money you receive.</p>
+    </div>
+
+    <!-- Income form card -->
+    <div class="card shadow-sm mx-auto" style="max-width: 650px;">
+        <div class="card-body p-4">
+
+            <p class="form-text mb-4">Fields marked with <strong>*</strong> are required.Description is optional.</p>
+
+            <form method="POST">
+
+                <div class="mb-3">
+                    <label for="amount" class="form-label">Amount (₦) *</label>
+
+                    <div class="input-group">
+                        <span class="input-group-text">₦</span>
+                        <input type="text" class="form-control" name="amount" id="amount" inputmode="decimal" value="{{ amount or '' }}" placeholder="e.g. 130,000.00" autocomplete="off" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="source" class="form-label">Income Source *</label>
+                    <input type="text" class="form-control" name="source" id="source" value="{{ source or '' }}" placeholder="e.g. Allowance, salary, or business" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description (Optional)</label>
+                    <textarea class="form-control" name="description" id="description" rows="3" placeholder="Add a note about this income">{{ description or '' }}</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="date" class="form-label">Date *</label>
+                    <input type="date" class="form-control" name="date" id="date" value="{{ date or '' }}" required>
+                </div>
+
+                <div class="d-flex justify-content-center flex-wrap gap-2 mt-4 no-print">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                        Go Back
+                    </a>
+
+                    <button type="submit" name="action" value="review" class="btn btn-primary">
+                        Review Income
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const amountInput = document.getElementById("amount");
+
+    function formatIncomeAmount(value) {
+        value = value.replace(/,/g, "").replace(/[^\d.]/g, "");
+
+        const decimalIndex = value.indexOf(".");
+
+        if (decimalIndex !== -1) {
+            value =
+                value.substring(0, decimalIndex + 1) +
+                value.substring(decimalIndex + 1).replace(/\./g, "");
+        }
+
+        const parts = value.split(".");
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+        return parts.join(".");
+    }
+
+    amountInput.addEventListener("input", function () {
+        this.value = formatIncomeAmount(this.value);
+    });
+
+    amountInput.value = formatIncomeAmount(amountInput.value);
+</script>
+
+{% endblock %}

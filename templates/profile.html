@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container py-3">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+        <div>
+            <h1 class="mb-1">My Profile</h1>
+            <p class="text-muted mb-0">View your SpendWise account information.</p>
+        </div>
+
+        <a href="{{ url_for('edit_profile') }}" class="btn btn-dark">
+            <i class="bi bi-pencil-square"></i> Edit Profile
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0 mx-auto" style="max-width: 800px;">
+        <div class="card-body p-4 p-md-5">
+
+            <div class="text-center mb-4">
+                <div class="rounded-circle bg-dark text-white d-inline-flex align-items-center justify-content-center mb-3" style="width: 90px; height: 90px; font-size: 2rem;">
+                    {{ (user.first_name or 'U')[0]|upper }}{{ (user.last_name or '')[0]|upper }}
+                </div>
+
+                <h2 class="h4 mb-1">
+                    {{ user.first_name }}
+                    {% if user.middle_name %}{{ user.middle_name }} {% endif %}
+                    {{ user.last_name }}
+                </h2>
+
+                <p class="text-muted mb-0">{{ user.email }}</p>
+            </div>
+
+            <hr>
+
+            <h3 class="h5 mb-3">Personal Information</h3>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="p-3 bg-light rounded h-100">
+                        <small class="text-muted d-block mb-1">First Name</small>
+                        <strong>{{ user.first_name or 'Not provided' }}</strong>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="p-3 bg-light rounded h-100">
+                        <small class="text-muted d-block mb-1">Middle Name</small>
+                        <strong>{{ user.middle_name or 'Not provided' }}</strong>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="p-3 bg-light rounded h-100">
+                        <small class="text-muted d-block mb-1">Last Name</small>
+                        <strong>{{ user.last_name or 'Not provided' }}</strong>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="p-3 bg-light rounded h-100">
+                        <small class="text-muted d-block mb-1">Phone Number</small>
+                        <strong>{{ user.phone_number or 'Not provided' }}</strong>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="p-3 bg-light rounded">
+                        <small class="text-muted d-block mb-1">Email Address</small>
+                        <strong>{{ user.email or 'Not provided' }}</strong>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="p-3 bg-light rounded">
+                        <small class="text-muted d-block mb-1">Main Income Source</small>
+                        <strong>{{ user.main_income_source or 'Not provided' }}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <div>
+                <small class="text-muted d-block mb-1">Member Since</small>
+                <strong>
+                    {% if user.created_at %}
+                        {{ user.created_at.strftime('%B %d, %Y') }}
+                    {% else %}
+                        Not available
+                    {% endif %}
+                </strong>
+            </div>
+
+            <div class="d-flex justify-content-center flex-wrap gap-2 mt-4">
+                <a href="{{ url_for('edit_profile') }}" class="btn btn-dark">
+                    Edit Profile
+                </a>
+
+                <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                    Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

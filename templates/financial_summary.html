@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container py-4">
+
+<!-- Page heading and print button -->
+<div class="financial-summary-header mb-4">
+    <h1 class="page-title">Financial Summary</h1>
+    <button type="button" class="btn btn-primary no-print" onclick="window.print()">
+        Print Financial Summary
+    </button>
+</div>
+
+    <!-- OVERALL SUMMARY -->
+    <h2 class="h4 mb-3">Overall Summary</h2>
+
+    <div class="row g-3 mb-4">
+        <div class="col-12 col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <p class="text-muted mb-2">Total Income</p>
+                    <h3 class="h4 text-success mb-0">₦{{ "{:,.2f}".format(total_income) }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <p class="text-muted mb-2">Total Expenses</p>
+                    <h3 class="h4 text-danger mb-0">₦{{ "{:,.2f}".format(total_expenses) }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <p class="text-muted mb-2">Balance</p>
+                    <h3 class="h4 mb-0">₦{{ "{:,.2f}".format(balance) }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEEDS AND WANTS -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <h2 class="h4 mb-3">Spending Breakdown</h2>
+
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <div class="p-3 rounded bg-light">
+                        <p class="text-muted mb-1">Needs</p>
+                        <h3 class="h5 mb-0">₦{{ "{:,.2f}".format(total_needs) }}</h3>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="p-3 rounded bg-light">
+                        <p class="text-muted mb-1">Wants</p>
+                        <h3 class="h5 mb-0">₦{{ "{:,.2f}".format(total_wants) }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- INCOME VS EXPENSES CHART -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <h2 class="h4 mb-3">Income vs Expenses</h2>
+
+            {% if monthly_summary %}
+                <div style="position: relative; height: 320px; max-width: 100%;">
+                    <canvas id="incomeExpenseChart"></canvas>
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">
+                    No monthly financial data is available to display yet.
+                </p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- MONTHLY SUMMARY TABLE -->
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+            <h2 class="h4 mb-3">Monthly Summary</h2>
+
+            {% if monthly_summary %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Month</th>
+                                <th class="text-end">Income</th>
+                                <th class="text-end">Expenses</th>
+                                <th class="text-end">Balance</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for month, data in monthly_summary.items() %}
+                                <tr>
+                                    <td class="fw-semibold">{{ month }}</td>
+                                    <td class="text-end text-success">
+                                        ₦{{ "{:,.2f}".format(data.income) }}
+                                    </td>
+                                    <td class="text-end text-danger">
+                                        ₦{{ "{:,.2f}".format(data.expenses) }}
+                                    </td>
+                                    <td class="text-end fw-semibold">
+                                        ₦{{ "{:,.2f}".format(data.balance) }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted mb-0">
+                    No financial records available yet.
+                </p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="text-center mt-4 no-print">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+            Back to Dashboard
+        </a>
+    </div>
+
+</div>
+
+{% if monthly_summary %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const labels = {{ monthly_summary.keys() | list | tojson }};
+    const incomeData = {{ monthly_summary.values() | map(attribute='income') | list | tojson }};
+    const expenseData = {{ monthly_summary.values() | map(attribute='expenses') | list | tojson }};
+
+    const incomeExpenseCtx = document.getElementById("incomeExpenseChart");
+
+    new Chart(incomeExpenseCtx, {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: "Income",
+                    data: incomeData,
+                    backgroundColor: "rgba(25, 135, 84, 0.75)",
+                    borderRadius: 5
+                },
+                {
+                    label: "Expenses",
+                    data: expenseData,
+                    backgroundColor: "rgba(220, 53, 69, 0.75)",
+                    borderRadius: 5
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return "₦" + Number(value).toLocaleString("en-NG");
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ": ₦" +
+                                Number(context.raw).toLocaleString("en-NG", {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                });
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endif %}
+
+{% endblock %}

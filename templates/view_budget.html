@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% block title %}{{ budget.month }} Budget | SpendWise{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="text-center mb-4">
+        <h1 class="fw-bold">{{ budget.month }} Budget</h1>
+        <p class="text-muted">Track your spending against your monthly plan.</p>
+    </div>
+
+    <div class="d-flex justify-content-center flex-wrap gap-2 mb-4 no-print">
+        <button type="button" class="btn btn-outline-primary" onclick="window.print()">
+            Print Budget
+        </button>
+
+        <a href="{{ url_for('edit_budget', budget_id=budget.budget_id) }}" class="btn btn-primary">
+            Edit Budget
+        </a>
+    </div>
+
+    <!-- Budget Summary -->
+    <h2 class="h4 text-center mb-3">Budget Summary</h2>
+
+    <div class="row g-3 mb-4">
+
+        <div class="col-12 col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <p class="text-muted mb-2">Total Budget</p>
+                    <h3 class="h4 mb-0">₦{{ "{:,.2f}".format(budget.total_amount|float) }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <p class="text-muted mb-2">Total Spent</p>
+                    <h3 class="h4 mb-0">₦{{ "{:,.2f}".format(total_spent|float) }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+                    <p class="text-muted mb-2">Remaining Balance</p>
+                    <h3 class="h4 mb-0">₦{{ "{:,.2f}".format(remaining|float) }}</h3>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Budget Progress -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+
+            <h2 class="h5 text-center mb-3">Budget Progress</h2>
+
+            <p class="text-center mb-2"><strong>{{ "{:,.2f}".format(percentage_used|float) }}% used</strong></p>
+
+            <div class="progress" role="progressbar" aria-label="Budget used" aria-valuenow="{{ percentage_used }}" aria-valuemin="0" aria-valuemax="100" style="height: 22px;">
+
+                <div class="progress-bar
+                    {% if budget_exceeded %}
+                        bg-danger
+                    {% elif budget_warning %}
+                        bg-warning
+                    {% else %}
+                        bg-success
+                    {% endif %}"
+                    style="width: {{ [percentage_used, 100]|min }}%;">
+                </div>
+
+            </div>
+
+            <p class="text-muted small text-center mt-2 mb-0">
+                The bar stops at 100% if spending exceeds your budget.
+                The percentage above shows your actual usage.
+            </p>
+
+        </div>
+    </div>
+
+    <!-- Needs and Wants -->
+    <h2 class="h4 text-center mb-3">Needs and Wants</h2>
+
+    <div class="row g-4 mb-4">
+
+        <div class="col-12 col-md-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+
+                    <h3 class="h5 mb-3">Needs</h3>
+
+                    <p><strong>Limit:</strong> ₦{{ "{:,.2f}".format(budget.needs_limit|float) }}</p>
+                    <p><strong>Spent:</strong> ₦{{ "{:,.2f}".format(needs_spent|float) }}</p>
+
+                    {% if needs_exceeded %}
+                        <div class="alert alert-danger mb-0">
+                            You have exceeded your Needs limit.
+                        </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body text-center">
+
+                    <h3 class="h5 mb-3">Wants</h3>
+
+                    <p><strong>Limit:</strong> ₦{{ "{:,.2f}".format(budget.wants_limit|float) }}</p>
+                    <p><strong>Spent:</strong> ₦{{ "{:,.2f}".format(wants_spent|float) }}</p>
+
+                    {% if wants_exceeded %}
+                        <div class="alert alert-warning mb-0">
+                            You have exceeded your Wants limit.
+                        </div>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Unallocated Budget -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body text-center">
+            <h2 class="h5 mb-2">Unallocated Budget</h2>
+            <p class="h4 mb-0">₦{{ "{:,.2f}".format((budget.total_amount - (budget.needs_limit + budget.wants_limit))|float) }}</p>
+        </div>
+    </div>
+
+    <!-- Budget Warnings -->
+    {% if budget_exceeded or budget_warning %}
+        <div class="alert {% if budget_exceeded %}alert-danger{% else %}alert-warning{% endif %} mb-4 text-center">
+            <h2 class="h5">Budget Warning</h2>
+
+            {% if budget_exceeded %}
+                Your total spending has exceeded your budget.
+            {% elif budget_warning %}
+                You have used 80% or more of your total budget.
+            {% endif %}
+        </div>
+    {% endif %}
+
+    <div class="d-flex justify-content-center flex-wrap gap-2 no-print">
+        <a href="{{ url_for('view_budgets') }}" class="btn btn-secondary">
+            Back to Budgets
+        </a>
+
+        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary">
+            Dashboard
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

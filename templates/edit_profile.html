@@ -1,0 +1,66 @@
+
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container py-3">
+    <div class="mb-4">
+        <h1 class="mb-1">Edit Profile</h1>
+        <p class="text-muted mb-0">Update your personal information and account details.</p>
+    </div>
+
+    <div class="card shadow-sm border-0 mx-auto" style="max-width: 800px;">
+        <div class="card-body p-4 p-md-5">
+
+            <form method="POST" action="{{ url_for('edit_profile') }}">
+
+                <h2 class="h5 mb-3">Personal Information</h2>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="first_name" class="form-label">First Name *</label>
+                        <input type="text" class="form-control" id="first_name" name="first_name" maxlength="100" value="{{ form_data.get('first_name', user.first_name or '') }}" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="middle_name" class="form-label">Middle Name</label>
+                        <input type="text" class="form-control" id="middle_name" name="middle_name" maxlength="100" value="{{ form_data.get('middle_name', user.middle_name or '') }}">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="last_name" class="form-label">Last Name *</label>
+                        <input type="text" class="form-control" id="last_name" name="last_name" maxlength="100" value="{{ form_data.get('last_name', user.last_name or '') }}" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="phone_number" class="form-label">Phone Number</label>
+                    <input type="tel" class="form-control" id="phone_number" name="phone_number" maxlength="20" value="{{ form_data.get('phone_number', user.phone_number or '') }}">
+                    </div>
+
+                    <div class="col-12">
+                        <label for="email" class="form-label">Email Address *</label>
+                        <input type="email" class="form-control" id="email" name="email" maxlength="120" value="{{ form_data.get('email', user.email or '') }}" required>
+                        <div class="form-text">
+                            Your email address must not already belong to another account.
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <label for="main_income_source" class="form-label">Main Income Source</label>
+                        <input type="text" class="form-control" id="main_income_source" name="main_income_source" maxlength="100" placeholder="e.g. Salary, business, allowance" value="{{ form_data.get('main_income_source', user.main_income_source or '') }}">
+                    </div>
+                </div>
+
+                <p class="text-muted small mt-3 mb-0">Fields marked with * are required.</p>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-dark">Save Changes</button>
+
+                    <a href="{{ url_for('profile') }}" class="btn btn-outline-secondary">Cancel</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

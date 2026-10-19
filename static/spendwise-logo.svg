@@ -1,0 +1,28 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 100" role="img" aria-labelledby="title">
+  <title id="title">SpendWise — Spend Smarter. Build Tomorrow.</title>
+
+  <!-- Wallet -->
+  <g transform="translate(8 12)">
+    <path d="M15 17 Q15 9 24 9 H67 Q75 9 75 17 V65 Q75 73 67 73 H18 Q9 73 9 64 V22 Q9 17 15 17Z"
+          fill="#183153"/>
+    <path d="M55 32 H77 Q82 32 82 38 V49 Q82 54 77 54 H55 Q49 54 49 48 V38 Q49 32 55 32Z"
+          fill="#183153" stroke="#F7F3EA" stroke-width="2"/>
+    <circle cx="64" cy="43" r="3" fill="#F7F3EA"/>
+
+    <!-- Teal notes -->
+    <path d="M22 7 L55 -3 L61 5 L28 15Z" fill="#18A999"/>
+    <path d="M31 12 L64 3 L69 11 L36 20Z" fill="#18A999"/>
+
+    <!-- Leaves -->
+    <path d="M24 67 C7 60 2 46 5 36 C20 38 30 50 29 64Z" fill="#18A999"/>
+    <path d="M27 67 C27 49 39 40 51 41 C51 55 41 66 27 70Z" fill="#18A999"/>
+    <path d="M26 70 L14 48 M27 69 L42 50" stroke="#F7F3EA" stroke-width="2" fill="none"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="105" y="52" font-family="Arial, Helvetica, sans-serif"
+        font-size="34" font-weight="700" fill="#F7F3EA">Spend<tspan fill="#18A999">Wise</tspan></text>
+  <text x="107" y="73" font-family="Arial, Helvetica, sans-serif"
+        font-size="10.5" letter-spacing="1.1" fill="#52657A">Spend Smarter. Build Tomorrow.</text>
+</svg>

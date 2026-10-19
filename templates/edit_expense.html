@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Edit Expense | SpendWise{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="text-center mb-4">
+        <h1 class="fw-bold">Edit Expense</h1>
+        <p class="text-muted">Update the details of your expense record.</p>
+    </div>
+
+    <div class="card shadow-sm mx-auto" style="max-width: 650px;">
+        <div class="card-body p-4">
+
+            <form method="POST">
+        
+                <div class="mb-3">
+                    <label for="amount" class="form-label">Amount</label>
+
+                    <div class="input-group">
+                        <span class="input-group-text">₦</span>
+                        <input type="text" class="form-control money-input" id="amount" name="amount" inputmode="decimal" autocomplete="off" value="{{ '{:,.2f}'.format(expense.amount|float) }}" required>
+                    </div>
+
+                    <div class="form-text">
+                        Enter the amount in naira.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="category" class="form-label">Category</label>
+                    <select class="form-select" id="category" name="category" required>
+                        <option value="">-- Select a category --</option>
+                        <option value="Food" {% if expense.category == "Food" %}selected{% endif %}>Food</option>
+                        <option value="Transportation" {% if expense.category == "Transportation" %}selected{% endif %}>Transportation</option>
+                        <option value="Housing" {% if expense.category == "Housing" %}selected{% endif %}>Housing</option>
+                        <option value="Education" {% if expense.category == "Education" %}selected{% endif %}>Education</option>
+                        <option value="Health" {% if expense.category == "Health" %}selected{% endif %}>Health</option>
+                        <option value="Shopping" {% if expense.category == "Shopping" %}selected{% endif %}>Shopping</option>
+                        <option value="Entertainment" {% if expense.category == "Entertainment" %}selected{% endif %}>Entertainment</option>
+                        <option value="Utilities" {% if expense.category == "Utilities" %}selected{% endif %}>Utilities</option>
+                        <option value="Personal Care" {% if expense.category == "Personal Care" %}selected{% endif %}>Personal Care</option>
+                        <option value="Other" {% if expense.category == "Other" %}selected{% endif %}>Other</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="type" class="form-label">Expense Type</label>
+                    <select class="form-select" id="type" name="type" required>
+                        <option value="">-- Select type --</option>
+                        <option value="Need" {% if expense.type == "Need" %}selected{% endif %}>Need</option>
+                        <option value="Want" {% if expense.type == "Want" %}selected{% endif %}>Want</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="3">{{ expense.description or '' }}</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="date" class="form-label">Date</label>
+                    <input type="date" class="form-control" id="date" name="date" value="{{ expense.date.strftime('%Y-%m-%d') }}" required>
+                </div>
+
+                <div class="d-flex justify-content-center flex-wrap gap-2 mt-4">
+                    <a href="{{ url_for('view_expenses') }}" class="btn btn-secondary">
+                        Go Back
+                    </a>
+
+                    <button type="submit" class="btn btn-primary">
+                        Save Changes
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
