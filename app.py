@@ -91,7 +91,12 @@ with app.app_context():
 allowed_categories = ["Food","Transportation","Housing","Education","Health","Shopping","Entertainment","Utilities","Personal Care","Other"]
 allowed_types = ["Need", "Want"]
 
-#ROUTES    
+#ROUTES  
+  
+@app.route("/")
+def home():
+    return redirect(url_for("login"))
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
