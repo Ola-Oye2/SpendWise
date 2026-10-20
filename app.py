@@ -11,9 +11,36 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY")
 
-app.config["SQLALCHEMY_DATABASE_URI"] = (f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}"
-                                         f"@{os.getenv('DB_HOST')}/{os.getenv('DB_NAME')}")
+
+database_url = os.getenv("DATABASE_URL")
+
+if database_url:
+    app.config["SQLALCHEMY_DATABASE_URI"] = database_url
+else:
+    app.config["SQLALCHEMY_DATABASE_URI"] = (
+        f"mysql+pymysql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}"
+        f"@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
+    )
+
+if os.getenv("DB_SSL_CA"):
+    app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+        "connect_args": {
+            "ssl": {
+                "ca": os.getenv("DB_SSL_CA")
+            }
+        }
+    }
+
 db = SQLAlchemy(app)
+
+with app.app_context():
+    try:
+        db.session.execute(db.text("SELECT 1"))
+        print("Database connection successful.")
+    except Exception as e:
+        print("Database connection failed. Check your database configuration.")
+        raise
+
 
 #DATABASE MODELS
 class User(db.Model):
@@ -27,7 +54,7 @@ class User(db.Model):
     main_income_source = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    expenes = db.relationship("Expense", backref="user")
+    expenses = db.relationship("Expense", backref="user")
 
 class Expense(db.Model):
     expense_id = db.Column(db.Integer, primary_key=True)
@@ -64,28 +91,37 @@ with app.app_context():
 allowed_categories = ["Food","Transportation","Housing","Education","Health","Shopping","Entertainment","Utilities","Personal Care","Other"]
 allowed_types = ["Need", "Want"]
 
-#ROUTES
-@app.route("/form", methods=["GET","POST"])
-def form():
-    if request.method == "POST":
-        username = request.form["username"]
-        amount = float(request.form["amount"])
-        category = request.form["category"]
-        description = request.form["description"]
-        return render_template("result.html", username=username, amount=amount, category=category, description= description)
-    return render_template("form.html")
-    
-@app.route("/register", methods=["GET","POST"])
+#ROUTES    
+@app.route("/register", methods=["GET", "POST"])
 def register():
-    if request.method == 'POST':
-        first_name = request.form["first_name"]
-        middle_name = request.form["middle_name"]
-        last_name = request.form["last_name"]
-        email = request.form["email"]
-        phone_number = request.form["phone_number"]
-        password = request.form["password"]
+    if request.method == "POST":
+        first_name = request.form.get("first_name", "").strip()
+        middle_name = request.form.get("middle_name", "").strip()
+        last_name = request.form.get("last_name", "").strip()
+        email = request.form.get("email", "").strip().lower()
+        phone_number = request.form.get("phone_number", "").strip()
+        password = request.form.get("password", "")
+        main_income_source = request.form.get(
+            "main_income_source", ""
+        ).strip()
+
+        # Check required fields
+        if not first_name or not last_name or not email or not password:
+            flash("Please fill in all required fields.", "danger")
+            return render_template("register.html")
+
+        # Check whether the email is already registered
+        existing_user = User.query.filter_by(email=email).first()
+
+        if existing_user:
+            flash(
+                "An account with this email already exists. Please log in.",
+                "warning"
+            )
+            return redirect(url_for("login"))
+
+        # Hash the password before saving it
         hashed_password = generate_password_hash(password)
-        main_income_source = request.form["main_income_source"]
 
         new_user = User(
             first_name=first_name,
@@ -97,12 +133,23 @@ def register():
             main_income_source=main_income_source
         )
 
-        db.session.add(new_user)
-        db.session.commit()
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+            flash("Registration successful! You can now log in.", "success")
+            return redirect(url_for("login"))
 
-        flash("Registration successful! You can now log in.", "success")
-        return redirect(url_for("login"))
+        except Exception:
+            db.session.rollback()
+            app.logger.exception("Registration failed")
+            flash(
+                "We couldn't complete your registration. Please try again.",
+                "danger"
+            )
+            return render_template("register.html")
+
     return render_template("register.html")
+
 
 @app.route("/profile")
 def profile():
@@ -163,21 +210,26 @@ def edit_profile():
 
     return render_template("edit_profile.html", user=user, form_data={})
 
-@app.route("/login", methods=["GET","POST"])
+
+@app.route("/login", methods=["GET", "POST"])
 def login():
-    if request.method == 'POST':
-        email = request.form["email"]
-        password = request.form["password"]
+    if request.method == "POST":
+        email = request.form.get("email", "").strip().lower()
+        password = request.form.get("password", "")
 
         user = User.query.filter_by(email=email).first()
 
-        if user and check_password_hash(user.password,password):
+        if user and check_password_hash(user.password, password):
+            session.clear()
             session["user_id"] = user.user_id
+            flash("Login successful!", "success")
             return redirect(url_for("dashboard"))
 
-        return "Invalid email or password"
+        flash("Invalid email or password. Please try again.", "danger")
+        return redirect(url_for("login"))
 
     return render_template("login.html")
+
 
 @app.route("/logout")
 def logout():
