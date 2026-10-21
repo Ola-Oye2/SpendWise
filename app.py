@@ -255,14 +255,9 @@ def dashboard():
     ).all()
 
     total_income = sum(income.amount for income in incomes)
-    print("DEBUG KPI:", repr(total_income), type(total_income))
     total_expenses = sum(expense.amount for expense in expenses)
 
     balance = total_income - total_expenses
-
-    print("DEBUG total_income:", repr(total_income))
-    print("DEBUG total_expenses:", repr(total_expenses))
-    print("DEBUG balance:", repr(balance))
 
     return render_template("dashboard.html", total_income=total_income, total_expenses=total_expenses, balance=balance)
 
