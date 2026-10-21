@@ -59,7 +59,7 @@ class User(db.Model):
 class Expense(db.Model):
     expense_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.user_id"))
-    amount = db.Column(db.Float)
+    amount = db.Column(db.Numeric(12, 2), nullable=False)
     category = db.Column(db.String(50))
     type = db.Column(db.String(50))
     description = db.Column(db.String(100))
@@ -68,7 +68,7 @@ class Expense(db.Model):
 class Income(db.Model):
     income_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.user_id"))
-    amount = db.Column(db.Float)
+    amount = db.Column(db.Numeric(12, 2), nullable=False)
     source = db.Column(db.String(50))
     description = db.Column(db.String(100))
     date = db.Column(db.DateTime)
@@ -255,9 +255,14 @@ def dashboard():
     ).all()
 
     total_income = sum(income.amount for income in incomes)
+    print("DEBUG KPI:", repr(total_income), type(total_income))
     total_expenses = sum(expense.amount for expense in expenses)
 
     balance = total_income - total_expenses
+
+    print("DEBUG total_income:", repr(total_income))
+    print("DEBUG total_expenses:", repr(total_expenses))
+    print("DEBUG balance:", repr(balance))
 
     return render_template("dashboard.html", total_income=total_income, total_expenses=total_expenses, balance=balance)
 
