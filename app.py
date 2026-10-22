@@ -192,7 +192,10 @@ def register():
         existing_user = User.query.filter_by(email=email).first()
 
         if existing_user:
-            flash("An account with this email already exists. Please log in.","warning")
+            flash(
+                "An account with this email already exists. Please log in.",
+                "warning"
+            )
             return redirect(url_for("login"))
 
         hashed_password = generate_password_hash(password)
@@ -205,31 +208,29 @@ def register():
             phone_number=phone_number,
             password=hashed_password,
             main_income_source=main_income_source,
-            email_verified=False
+            email_verified=True
         )
 
         try:
             db.session.add(new_user)
             db.session.commit()
 
-            try:
-                send_verification_email(new_user)
-            except Exception:
-                app.logger.exception("Verification email failed")
-                flash("Your account was created, but we couldn't send the verification email. Please contact support.","warning")
-                return redirect(url_for("login"))
-
-            flash("Registration successful! Check your email for a verification link before logging in.","success")
+            flash(
+                "Registration successful! You can now log in.",
+                "success"
+            )
             return redirect(url_for("login"))
 
         except Exception:
             db.session.rollback()
             app.logger.exception("Registration failed")
-            flash("We couldn't complete your registration. Please try again.","danger")
+            flash(
+                "We couldn't complete your registration. Please try again.",
+                "danger"
+            )
             return render_template("register.html")
 
     return render_template("register.html")
-
 
 @app.route("/profile")
 def profile():
@@ -300,10 +301,6 @@ def login():
         user = User.query.filter_by(email=email).first()
 
         if user and check_password_hash(user.password, password):
-            if not user.email_verified:
-                flash("Please verify your email address before logging in. Check your inbox for the verification link.","warning")
-                return redirect(url_for("login"))
-
             session.clear()
             session["user_id"] = user.user_id
 
@@ -314,7 +311,6 @@ def login():
         return redirect(url_for("login"))
 
     return render_template("login.html")
-
 
 @app.route("/logout")
 def logout():
