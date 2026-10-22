@@ -19,7 +19,7 @@
             <div class="card h-100 shadow-sm border-0">
                 <div class="card-body">
                     <p class="text-muted mb-2">Total Income</p>
-                    <h3 class="h4 text-success mb-0">₦{{ "{:,.2f}".format(total_income) }}</h3>
+                    <h3 class="h4 text-success mb-0"><span class="money-value">₦{{ "{:,.2f}".format(total_income) }}</span></h3>
                 </div>
             </div>
         </div>
@@ -28,7 +28,7 @@
             <div class="card h-100 shadow-sm border-0">
                 <div class="card-body">
                     <p class="text-muted mb-2">Total Expenses</p>
-                    <h3 class="h4 text-danger mb-0">₦{{ "{:,.2f}".format(total_expenses) }}</h3>
+                    <h3 class="h4 text-danger mb-0"><span class="money-value">₦{{ "{:,.2f}".format(total_expenses) }}</span></h3>
                 </div>
             </div>
         </div>
@@ -37,7 +37,7 @@
             <div class="card h-100 shadow-sm border-0">
                 <div class="card-body">
                     <p class="text-muted mb-2">Balance</p>
-                    <h3 class="h4 mb-0">₦{{ "{:,.2f}".format(balance) }}</h3>
+                    <h3 class="h4 mb-0"><span class="money-value">₦{{ "{:,.2f}".format(balance) }}</span></h3>
                 </div>
             </div>
         </div>
@@ -52,14 +52,14 @@
                 <div class="col-12 col-md-6">
                     <div class="p-3 rounded bg-light">
                         <p class="text-muted mb-1">Needs</p>
-                        <h3 class="h5 mb-0">₦{{ "{:,.2f}".format(total_needs) }}</h3>
+                        <h3 class="h5 mb-0"><span class="money-value">₦{{ "{:,.2f}".format(total_needs) }}</span></h3>
                     </div>
                 </div>
 
                 <div class="col-12 col-md-6">
                     <div class="p-3 rounded bg-light">
                         <p class="text-muted mb-1">Wants</p>
-                        <h3 class="h5 mb-0">₦{{ "{:,.2f}".format(total_wants) }}</h3>
+                        <h3 class="h5 mb-0"><span class="money-value">₦{{ "{:,.2f}".format(total_wants) }}</span></h3>
                     </div>
                 </div>
             </div>
@@ -105,13 +105,13 @@
                                 <tr>
                                     <td class="fw-semibold">{{ month }}</td>
                                     <td class="text-end text-success">
-                                        ₦{{ "{:,.2f}".format(data.income) }}
+                                        <span class="money-value">₦{{ "{:,.2f}".format(data.income) }}</span>
                                     </td>
                                     <td class="text-end text-danger">
-                                        ₦{{ "{:,.2f}".format(data.expenses) }}
+                                        <span class="money-value">₦{{ "{:,.2f}".format(data.expenses) }}</span>
                                     </td>
                                     <td class="text-end fw-semibold">
-                                        ₦{{ "{:,.2f}".format(data.balance) }}
+                                        <span class="money-value">₦{{ "{:,.2f}".format(data.balance) }}</span>
                                     </td>
                                 </tr>
                             {% endfor %}

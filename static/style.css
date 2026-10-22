@@ -394,3 +394,266 @@ a:focus-visible {
         max-width: 165px;
     }
 }
+
+/* =========================================
+   SPENDWISE DARK MODE
+   ========================================= */
+
+html[data-theme="dark"] {
+    color-scheme: dark;
+
+    --sw-primary: #A9C7F5;
+    --sw-primary-hover: #C5D9FA;
+    --sw-secondary: #B0BED0;
+    --sw-accent: #55D6C2;
+    --sw-accent-hover: #7BE4D4;
+
+    --sw-bg: #111827;
+    --sw-surface: #1F2937;
+    --sw-surface-tint: #293849;
+    --sw-surface-muted: #374151;
+
+    --sw-text: #F3F4F6;
+    --sw-text-muted: #B6C2D0;
+    --sw-border: #465365;
+
+    --sw-success: #55C99A;
+    --sw-success-bg: #183B31;
+    --sw-warning: #F5CA72;
+    --sw-warning-bg: #49391B;
+    --sw-danger: #FF9A9F;
+    --sw-danger-bg: #48252B;
+    --sw-info: #9CCAFF;
+    --sw-info-bg: #203951;
+
+    --sw-shadow: 0 3px 12px rgba(0, 0, 0, 0.18);
+}
+
+/* Page backgrounds and text */
+html[data-theme="dark"] body,
+html[data-theme="dark"] main {
+    background-color: var(--sw-bg);
+    color: var(--sw-text);
+}
+
+html[data-theme="dark"] p,
+html[data-theme="dark"] label,
+html[data-theme="dark"] li,
+html[data-theme="dark"] small {
+    color: var(--sw-text);
+}
+
+html[data-theme="dark"] .text-muted,
+html[data-theme="dark"] .form-text {
+    color: var(--sw-text-muted) !important;
+}
+
+/* Navigation */
+html[data-theme="dark"] .navbar.navbar-dark.bg-dark {
+    background-color: #0B1220 !important;
+}
+
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.theme-toggle:hover,
+.theme-toggle:focus {
+    color: #8DE1D6 !important;
+}
+
+/* Cards and panels */
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .modal-content {
+    background-color: var(--sw-surface);
+    color: var(--sw-text);
+    border-color: var(--sw-border);
+}
+
+html[data-theme="dark"] .card-header,
+html[data-theme="dark"] .list-group-item {
+    background-color: var(--sw-surface-tint);
+    color: var(--sw-text);
+    border-color: var(--sw-border);
+}
+
+/* Headings */
+html[data-theme="dark"] h1,
+html[data-theme="dark"] h2,
+html[data-theme="dark"] h3,
+html[data-theme="dark"] h4,
+html[data-theme="dark"] h5,
+html[data-theme="dark"] h6,
+html[data-theme="dark"] .page-title {
+    color: var(--sw-primary);
+}
+
+/* Links */
+html[data-theme="dark"] a {
+    color: var(--sw-accent);
+}
+
+html[data-theme="dark"] .navbar a,
+html[data-theme="dark"] .btn {
+    /* Keep navigation and button contrast readable. */
+}
+
+/* Forms */
+html[data-theme="dark"] .form-control,
+html[data-theme="dark"] .form-select {
+    background-color: #172131;
+    color: var(--sw-text);
+    border-color: var(--sw-border);
+}
+
+html[data-theme="dark"] .form-control::placeholder {
+    color: #A5B1C1;
+}
+
+html[data-theme="dark"] .form-control:focus,
+html[data-theme="dark"] .form-select:focus {
+    background-color: #172131;
+    color: var(--sw-text);
+}
+
+/* Dropdown menus */
+html[data-theme="dark"] .dropdown-menu {
+    background-color: var(--sw-surface);
+    border-color: var(--sw-border);
+}
+
+html[data-theme="dark"] .dropdown-item {
+    color: var(--sw-text);
+}
+
+html[data-theme="dark"] .dropdown-item:hover,
+html[data-theme="dark"] .dropdown-item:focus {
+    background-color: var(--sw-surface-tint);
+    color: var(--sw-text);
+}
+
+/* Tables */
+html[data-theme="dark"] .table {
+    --bs-table-color: var(--sw-text);
+    --bs-table-bg: var(--sw-surface);
+    --bs-table-border-color: var(--sw-border);
+    --bs-table-striped-bg: #263344;
+    --bs-table-hover-bg: #334155;
+}
+
+html[data-theme="dark"] .table thead th,
+html[data-theme="dark"] .table thead.table-dark th {
+    background-color: #0B1220 !important;
+    color: #F3F4F6 !important;
+    border-color: var(--sw-border) !important;
+}
+
+html[data-theme="dark"] .table tbody td,
+html[data-theme="dark"] .table tbody th {
+    color: var(--sw-text);
+}
+
+html[data-theme="dark"] .table tbody tr:hover td {
+    background-color: #334155;
+}
+
+/* Light backgrounds and borders used by Bootstrap */
+html[data-theme="dark"] .bg-light {
+    background-color: var(--sw-surface-tint) !important;
+    color: var(--sw-text) !important;
+}
+
+html[data-theme="dark"] .border,
+html[data-theme="dark"] hr {
+    border-color: var(--sw-border) !important;
+}
+
+/* Alerts */
+html[data-theme="dark"] .alert-success {
+    color: #A7E8C8;
+    background-color: var(--sw-success-bg);
+    border-color: #326A53;
+}
+
+html[data-theme="dark"] .alert-warning {
+    color: #FFE0A0;
+    background-color: var(--sw-warning-bg);
+    border-color: #806329;
+}
+
+html[data-theme="dark"] .alert-danger {
+    color: #FFB8BD;
+    background-color: var(--sw-danger-bg);
+    border-color: #81434A;
+}
+
+html[data-theme="dark"] .alert-info {
+    color: #B8DAFF;
+    background-color: var(--sw-info-bg);
+    border-color: #3D5F80;
+}
+
+/* Buttons */
+html[data-theme="dark"] .btn-outline-primary,
+html[data-theme="dark"] .btn-outline-dark {
+    color: var(--sw-accent);
+    border-color: var(--sw-accent);
+}
+
+html[data-theme="dark"] .btn-outline-primary:hover,
+html[data-theme="dark"] .btn-outline-dark:hover {
+    color: #111827;
+    background-color: var(--sw-accent);
+}
+
+/* Footer */
+html[data-theme="dark"] footer {
+    color: var(--sw-text-muted) !important;
+}
+
+/* Improve button readability in SpendWise */
+.btn-primary,
+.btn-info,
+.btn-outline-primary:hover,
+.btn-outline-info:hover {
+    background-color: var(--sw-primary) !important;
+    border-color: var(--sw-primary) !important;
+    color: #ffffff !important;
+}
+
+.btn-primary:hover,
+.btn-info:hover {
+    background-color: var(--sw-primary-hover) !important;
+    border-color: var(--sw-primary-hover) !important;
+    color: #ffffff !important;
+}
+
+/* Consistent, readable SpendWise buttons */
+.btn-primary,
+.btn-success,
+.btn-info,
+.btn-warning {
+    color: #ffffff !important;
+}
+
+.btn-primary:hover,
+.btn-success:hover,
+.btn-info:hover,
+.btn-warning:hover {
+    color: #ffffff !important;
+    filter: brightness(0.92);
+}
+
+/* Fix turquoise text on green or blue button backgrounds */
+.btn-primary *,
+.btn-success *,
+.btn-info *,
+.btn-warning * {
+    color: #ffffff !important;
+}

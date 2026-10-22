@@ -29,7 +29,7 @@
             <div class="card h-100 shadow-sm">
                 <div class="card-body text-center">
                     <p class="text-muted mb-2">Total Budget</p>
-                    <h3 class="h4 mb-0">₦{{ "{:,.2f}".format(budget.total_amount|float) }}</h3>
+                    <h3 class="h4 mb-0"><span class="money-value">₦{{ "{:,.2f}".format(budget.needs_limit) }}</span></h3>
                 </div>
             </div>
         </div>
@@ -38,7 +38,7 @@
             <div class="card h-100 shadow-sm">
                 <div class="card-body text-center">
                     <p class="text-muted mb-2">Total Spent</p>
-                    <h3 class="h4 mb-0">₦{{ "{:,.2f}".format(total_spent|float) }}</h3>
+                    <h3 class="h4 mb-0"><span class="money-value">₦{{ "{:,.2f}".format(total_spent|float) }}</span></h3>
                 </div>
             </div>
         </div>
@@ -47,7 +47,7 @@
             <div class="card h-100 shadow-sm">
                 <div class="card-body text-center">
                     <p class="text-muted mb-2">Remaining Balance</p>
-                    <h3 class="h4 mb-0">₦{{ "{:,.2f}".format(remaining|float) }}</h3>
+                    <h3 class="h4 mb-0"><span class="money-value">₦{{ "{:,.2f}".format(remaining|float) }}</span></h3>
                 </div>
             </div>
         </div>
@@ -60,7 +60,7 @@
 
             <h2 class="h5 text-center mb-3">Budget Progress</h2>
 
-            <p class="text-center mb-2"><strong>{{ "{:,.2f}".format(percentage_used|float) }}% used</strong></p>
+            <p class="text-center mb-2"><strong><span class="money-value">{{ "{:,.2f}".format(percentage_used|float) }}% used</span></strong></p>
 
             <div class="progress" role="progressbar" aria-label="Budget used" aria-valuenow="{{ percentage_used }}" aria-valuemin="0" aria-valuemax="100" style="height: 22px;">
 
@@ -96,8 +96,8 @@
 
                     <h3 class="h5 mb-3">Needs</h3>
 
-                    <p><strong>Limit:</strong> ₦{{ "{:,.2f}".format(budget.needs_limit|float) }}</p>
-                    <p><strong>Spent:</strong> ₦{{ "{:,.2f}".format(needs_spent|float) }}</p>
+                    <p><strong>Limit:</strong><span class="money-value">₦{{ "{:,.2f}".format(budget.needs_limit|float) }}</span></p>
+                    <p><strong>Spent:</strong><span class="money-value">₦{{ "{:,.2f}".format(needs_spent|float) }}</span></p>
 
                     {% if needs_exceeded %}
                         <div class="alert alert-danger mb-0">
@@ -115,8 +115,8 @@
 
                     <h3 class="h5 mb-3">Wants</h3>
 
-                    <p><strong>Limit:</strong> ₦{{ "{:,.2f}".format(budget.wants_limit|float) }}</p>
-                    <p><strong>Spent:</strong> ₦{{ "{:,.2f}".format(wants_spent|float) }}</p>
+                    <p><strong>Limit:</strong><span class="money-value">₦{{ "{:,.2f}".format(budget.wants_limit|float) }}</span></p>
+                    <p><strong>Spent:</strong><span class="money-value">₦{{ "{:,.2f}".format(wants_spent|float) }}</span></p>
 
                     {% if wants_exceeded %}
                         <div class="alert alert-warning mb-0">
@@ -134,7 +134,7 @@
     <div class="card shadow-sm mb-4">
         <div class="card-body text-center">
             <h2 class="h5 mb-2">Unallocated Budget</h2>
-            <p class="h4 mb-0">₦{{ "{:,.2f}".format((budget.total_amount - (budget.needs_limit + budget.wants_limit))|float) }}</p>
+            <p class="h4 mb-0"><span class="money-value">₦{{ "{:,.2f}".format((budget.total_amount - (budget.needs_limit + budget.wants_limit))|float) }}</span></p>
         </div>
     </div>
 

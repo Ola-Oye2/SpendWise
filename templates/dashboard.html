@@ -5,14 +5,44 @@
 {% block content %}
 <div class="container py-3">
 
-<!-- Welcome section -->
-<div class="dashboard-welcome mb-4">
-    <h1 class="page-title">Dashboard</h1>
-    <p class="text-muted mb-0">Welcome to SpendWise. Here's an overview of your finances.</p>
-</div>
+    <!-- Welcome section -->
+    <div class="dashboard-welcome mb-4">
+    
+        <div class="container mt-4 mb-4">
+            <h2><span id="greeting">Welcome</span>, {{ first_name }}!</h2>
+            <p>Welcome back to your SpendWise dashboard. Here's an overview of your finances.</p>
+        </div>
 
-    <!-- Financial overview -->
-    <h2 class="h4 mb-3">Financial Overview</h2>
+        <script>
+            function updateGreeting() {
+                const hour = new Date().getHours();
+                let greeting;
+
+                if (hour < 12) {
+                    greeting = "Good morning";
+                } else if (hour < 17) {
+                    greeting = "Good afternoon";
+                } else {
+                    greeting = "Good evening";
+                }
+
+                document.getElementById("greeting").textContent = greeting;
+            }
+
+            updateGreeting();
+        </script>
+    </div>
+
+
+    <!-- Financial overview heading and privacy toggle -->
+    <div class="d-flex flex-wrap align-items-center justify-content-center position-relative mb-3">
+        <h2 class="h4 mb-0">Financial Overview</h2>
+
+        <button type="button" id="moneyToggle" class="btn btn-outline-secondary btn-sm position-absolute end-0" aria-label="Hide financial amounts" title="Hide financial amounts">
+            <span id="moneyToggleIcon" aria-hidden="true">👁️</span>
+            <span class="d-none d-sm-inline" id="moneyToggleLabel">Hide amounts</span>
+        </button>
+    </div>
 
     <div class="row g-3 mb-5">
 
@@ -20,7 +50,7 @@
             <div class="card h-100 shadow-sm border-0">
                 <div class="card-body p-4">
                     <p class="text-muted mb-2">Total Income</p>
-                    <h3 class="h4 fw-bold text-success mb-0">₦{{ "{:,.2f}".format(total_income) }}</h3>
+                    <h3 class="h4 fw-bold text-success mb-0 money-value">₦{{ "{:,.2f}".format(total_income) }}</h3>
                 </div>
             </div>
         </div>
@@ -29,7 +59,7 @@
             <div class="card h-100 shadow-sm border-0">
                 <div class="card-body p-4">
                     <p class="text-muted mb-2">Total Expenses</p>
-                    <h3 class="h4 fw-bold text-danger mb-0">₦{{ "{:,.2f}".format(total_expenses) }}</h3>
+                    <h3 class="h4 fw-bold text-danger mb-0 money-value">₦{{ "{:,.2f}".format(total_expenses) }}</h3>
                 </div>
             </div>
         </div>
@@ -38,7 +68,7 @@
             <div class="card h-100 shadow-sm border-0">
                 <div class="card-body p-4">
                     <p class="text-muted mb-2">Balance</p>
-                    <h3 class="h4 fw-bold mb-0 {% if balance < 0 %}text-danger{% else %}text-primary{% endif %}">
+                    <h3 class="h4 fw-bold mb-0 money-value {% if balance < 0 %}text-danger{% else %}text-primary{% endif %}">
                         ₦{{ "{:,.2f}".format(balance) }}
                     </h3>
                 </div>
@@ -46,6 +76,48 @@
         </div>
 
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const toggle = document.getElementById("moneyToggle");
+            const icon = document.getElementById("moneyToggleIcon");
+            const label = document.getElementById("moneyToggleLabel");
+            const moneyValues = document.querySelectorAll(".money-value");
+
+            if (!toggle) return;
+
+            let amountsHidden = false;
+
+            toggle.addEventListener("click", function () {
+                amountsHidden = !amountsHidden;
+
+                moneyValues.forEach(function (element) {
+                    if (amountsHidden) {
+                        if (!element.dataset.originalAmount) {
+                            element.dataset.originalAmount = element.textContent.trim();
+                        }
+
+                        element.textContent = "₦ ••••••";
+                    } else {
+                        element.textContent = element.dataset.originalAmount;
+                    }
+                });
+
+                icon.textContent = amountsHidden ? "🙈" : "👁️";
+                label.textContent = amountsHidden ? "Show amounts" : "Hide amounts";
+
+                toggle.setAttribute(
+                    "aria-label",
+                    amountsHidden ? "Show financial amounts" : "Hide financial amounts"
+                );
+
+                toggle.setAttribute(
+                    "title",
+                    amountsHidden ? "Show financial amounts" : "Hide financial amounts"
+                );
+            });
+        });
+    </script>
 
     <!-- Quick actions -->
     <div class="mb-4">

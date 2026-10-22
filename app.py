@@ -5,11 +5,87 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import IntegrityError
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_mail import Mail, Message
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY")
+
+app.config["MAIL_SERVER"] = os.getenv("MAIL_SERVER", "smtp.gmail.com")
+app.config["MAIL_PORT"] = int(os.getenv("MAIL_PORT", 587))
+app.config["MAIL_USE_TLS"] = (os.getenv("MAIL_USE_TLS", "True").lower() == "true")
+app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
+app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
+app.config["MAIL_DEFAULT_SENDER"] = os.getenv("MAIL_DEFAULT_SENDER")
+
+mail = Mail(app)
+
+serializer = URLSafeTimedSerializer(app.secret_key)
+
+def generate_verification_token(email):
+    return serializer.dumps(email, salt="email-verification")
+
+def verify_verification_token(token, max_age=1800):
+    try:
+        email = serializer.loads( token, salt="email-verification", max_age=max_age)
+        return email
+    except (SignatureExpired, BadSignature):
+        return None
+
+
+def send_verification_email(user):
+    token = generate_verification_token(user.email)
+
+    verification_url = url_for("verify_email", token=token, _external=True)
+
+    msg = Message(
+        subject="Verify your SpendWise email address",
+        recipients=[user.email],
+        body=f"""Hello {user.first_name},
+
+Thank you for registering with SpendWise!
+
+Please verify your email address by clicking the link below:
+
+{verification_url}
+
+This link expires in 30 minutes.
+
+If you did not create a SpendWise account, you can ignore this email.
+
+Regards,
+The SpendWise Team
+"""
+    )
+
+    mail.send(msg)
+
+
+@app.route("/verify-email/<token>")
+def verify_email(token):
+    email = verify_verification_token(token)
+
+    if not email:
+        flash("This verification link is invalid or has expired. Please register again or request a new verification email.","danger")
+        return redirect(url_for("login"))
+
+    user = User.query.filter_by(email=email).first()
+
+    if not user:
+        flash("We couldn't find an account for this verification link.", "danger")
+        return redirect(url_for("login"))
+
+    if user.email_verified:
+        flash("Your email address has already been verified. You can log in.", "info")
+        return redirect(url_for("login"))
+
+    user.email_verified = True
+    db.session.commit()
+
+    flash("Email verified successfully! You can now log in.", "success")
+    return redirect(url_for("login"))
 
 
 database_url = os.getenv("DATABASE_URL")
@@ -51,6 +127,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True)
     phone_number = db.Column(db.String(20))
     password = db.Column(db.String(255))
+    email_verified = db.Column(db.Boolean, nullable=False, default=True)
     main_income_source = db.Column(db.String(100))
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -87,12 +164,12 @@ class Budget(db.Model):
 with app.app_context():
     db.create_all()
 
+
 #ALLOWED LISTS
 allowed_categories = ["Food","Transportation","Housing","Education","Health","Shopping","Entertainment","Utilities","Personal Care","Other"]
 allowed_types = ["Need", "Want"]
 
 #ROUTES  
-  
 @app.route("/")
 def home():
     return redirect(url_for("login"))
@@ -106,26 +183,18 @@ def register():
         email = request.form.get("email", "").strip().lower()
         phone_number = request.form.get("phone_number", "").strip()
         password = request.form.get("password", "")
-        main_income_source = request.form.get(
-            "main_income_source", ""
-        ).strip()
+        main_income_source = request.form.get("main_income_source", "").strip()
 
-        # Check required fields
         if not first_name or not last_name or not email or not password:
             flash("Please fill in all required fields.", "danger")
             return render_template("register.html")
 
-        # Check whether the email is already registered
         existing_user = User.query.filter_by(email=email).first()
 
         if existing_user:
-            flash(
-                "An account with this email already exists. Please log in.",
-                "warning"
-            )
+            flash("An account with this email already exists. Please log in.","warning")
             return redirect(url_for("login"))
 
-        # Hash the password before saving it
         hashed_password = generate_password_hash(password)
 
         new_user = User(
@@ -135,22 +204,28 @@ def register():
             email=email,
             phone_number=phone_number,
             password=hashed_password,
-            main_income_source=main_income_source
+            main_income_source=main_income_source,
+            email_verified=False
         )
 
         try:
             db.session.add(new_user)
             db.session.commit()
-            flash("Registration successful! You can now log in.", "success")
+
+            try:
+                send_verification_email(new_user)
+            except Exception:
+                app.logger.exception("Verification email failed")
+                flash("Your account was created, but we couldn't send the verification email. Please contact support.","warning")
+                return redirect(url_for("login"))
+
+            flash("Registration successful! Check your email for a verification link before logging in.","success")
             return redirect(url_for("login"))
 
         except Exception:
             db.session.rollback()
             app.logger.exception("Registration failed")
-            flash(
-                "We couldn't complete your registration. Please try again.",
-                "danger"
-            )
+            flash("We couldn't complete your registration. Please try again.","danger")
             return render_template("register.html")
 
     return render_template("register.html")
@@ -225,8 +300,13 @@ def login():
         user = User.query.filter_by(email=email).first()
 
         if user and check_password_hash(user.password, password):
+            if not user.email_verified:
+                flash("Please verify your email address before logging in. Check your inbox for the verification link.","warning")
+                return redirect(url_for("login"))
+
             session.clear()
             session["user_id"] = user.user_id
+
             flash("Login successful!", "success")
             return redirect(url_for("dashboard"))
 
@@ -241,25 +321,26 @@ def logout():
     session.pop("user_id",None)
     return redirect(url_for("login"))
 
+
 @app.route("/dashboard")
 def dashboard():
     if "user_id" not in session:
         return redirect(url_for("login"))
 
-    incomes = Income.query.filter_by(
-        user_id = session["user_id"]
-    ).all()
+    user = User.query.get(session["user_id"])
 
-    expenses = Expense.query.filter_by(
-        user_id = session["user_id"]
-    ).all()
+    first_name = user.first_name if user and user.first_name else "there"
+
+    incomes = Income.query.filter_by(user_id=session["user_id"]).all()
+
+    expenses = Expense.query.filter_by(user_id=session["user_id"]).all()
 
     total_income = sum(income.amount for income in incomes)
     total_expenses = sum(expense.amount for expense in expenses)
 
     balance = total_income - total_expenses
 
-    return render_template("dashboard.html", total_income=total_income, total_expenses=total_expenses, balance=balance)
+    return render_template("dashboard.html", total_income=total_income, total_expenses=total_expenses, balance=balance, first_name=first_name)
 
 
 @app.route("/add-income", methods=["GET", "POST"])
